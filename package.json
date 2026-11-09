@@ -1,5 +1,5 @@
 {
-  "name": "message-board",
+  "name": "message-board-auth",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,18 +9,10 @@
     "build:views": "node scripts/build-views.js",
     "dev:worker": "wrangler dev"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jahphetB/message-board.git"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/jahphetB/message-board/issues"
-  },
-  "homepage": "https://github.com/jahphetB/message-board#readme",
   "dependencies": {
     "ejs": "3.1.10",
     "express": "^5.3.0",
