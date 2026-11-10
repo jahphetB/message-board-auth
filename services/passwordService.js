@@ -1,26 +1,27 @@
-const bcrypt = require("bcryptjs");
-
-// This starting cost must be checked against the deployed Workers runtime.
-const BCRYPT_COST = 12;
+const passwordQueries = require("../db/passwordQueries");
 
 function validatePasswordInput(password) {
 	if (typeof password !== "string") {
 		throw new TypeError("Password must be a string.");
 	}
 
-	if (bcrypt.truncates(password)) {
+	if (Buffer.byteLength(password, "utf8") > 72) {
 		throw new RangeError("Password must be at most 72 UTF-8 bytes.");
+	}
+
+	if (password.includes("\0")) {
+		throw new TypeError("Password cannot contain a null character.");
 	}
 }
 
 async function hashPassword(password) {
 	validatePasswordInput(password);
-	return bcrypt.hash(password, BCRYPT_COST);
+	return passwordQueries.hashPassword(password);
 }
 
 async function comparePassword(password, hash) {
 	validatePasswordInput(password);
-	return bcrypt.compare(password, hash);
+	return passwordQueries.comparePassword(password, hash);
 }
 
 module.exports = { hashPassword, comparePassword };

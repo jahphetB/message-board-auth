@@ -16,3 +16,6 @@ After testing, the probe token was removed and the endpoint returned 404.
 The deployed Worker is the disabled probe, not the application. The probe
 configuration targets the real `message-board-auth` Worker, so deploying it
 again would replace that Worker's current code.
+
+This is a historical result: the application has since replaced bcryptjs with
+pgcrypto, so the original probe no longer exercises the old implementation.
