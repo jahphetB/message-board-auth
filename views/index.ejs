@@ -9,30 +9,13 @@
 	<body class="page">
 		<main class="main">
 			<h1 class="page-title"><%= title %></h1>
-			<a class="new-message-link" href="/new">New message</a>
-            <ul class="message-list">
-				<% messages.forEach((message, index) => { %>
+			<ul class="message-list">
+				<% messages.forEach((message) => { %>
 					<li class="message-item">
-						<p class="message-user"><%= message.user %></p>
+						<h2 class="message-title"><%= message.title %></h2>
 						<p class="message-text"><%= message.text %></p>
-						<p class="message-date"><%= message.added.toLocaleString() %></p>
 						<div class="message-actions">
-							<a class="message-open-link" href="/messages/<%= message.id %>">
-								Open
-							</a>
-
-							<form
-								class="message-delete-form"
-								method="POST"
-								action="/messages/<%= message.id %>/delete"
-							>
-								<a class="message-edit-link" href="/messages/<%= message.id %>/edit">
-									Edit
-								</a>
-								<button class="message-delete-button" type="submit">
-									Delete
-								</button>
-							</form>
+							<a class="message-open-link" href="/messages/<%= message.id %>">Open</a>
 						</div>
 					</li>
 				<% }); %>

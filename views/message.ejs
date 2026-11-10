@@ -3,15 +3,14 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="/styles.css">
+		<link rel="stylesheet" href="/styles.css">
 		<title><%= title %></title>
 	</head>
 	<body class="page">
 		<main class="main">
 			<h1 class="page-title"><%= title %></h1>
-			<p class="message-user"><%= message.user %></p>
+			<h2 class="message-title"><%= message.title %></h2>
 			<p class="message-text"><%= message.text %></p>
-			<p class="message-date"><%= message.added.toLocaleString() %></p>
 			<a class="home-link" href="/">Back to messages</a>
 		</main>
 	</body>

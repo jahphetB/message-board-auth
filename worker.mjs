@@ -45,8 +45,8 @@ export default {
 			max: 1
 		});
 
-		pool.on("error", (error) => {
-			console.error("Database connection error:", error);
+		pool.on("error", () => {
+			console.error("Database connection error.");
 		});
 
 		try {
