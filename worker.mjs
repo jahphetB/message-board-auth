@@ -3,6 +3,7 @@ import { Pool } from "pg";
 import { httpServerHandler } from "cloudflare:node";
 
 import database from "./db/pool.js";
+import poolErrors from "./db/workerPoolErrors.js";
 import indexRouter from "./routes/indexRouter.js";
 import views from "./generated/views.js";
 
@@ -42,10 +43,15 @@ export default {
 	async fetch(request, env, ctx) {
 		const pool = new Pool({
 			connectionString: env.DATABASE_URL,
-			max: 1
+			max: 1,
+			idleTimeoutMillis: 0
 		});
 
-		pool.on("error", () => {
+		pool.on("error", (error) => {
+			if (poolErrors.isExpectedPoolCloseError(pool, error)) {
+				return;
+			}
+
 			console.error("Database connection error.");
 		});
 
