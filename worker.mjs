@@ -1,38 +1,28 @@
-import express from "express";
 import { Pool } from "pg";
 import { httpServerHandler } from "cloudflare:node";
 
+import createApp from "./createApp.js";
 import database from "./db/pool.js";
 import poolErrors from "./db/workerPoolErrors.js";
-import indexRouter from "./routes/indexRouter.js";
 import views from "./generated/views.js";
 
-const app = express();
+const app = createApp((app) => {
+	app.use((req, res, next) => {
+		res.render = (name, data = {}) => {
+			const render = views[name];
 
-app.use(express.urlencoded({ extended: true }));
+			if (!render) {
+				throw new Error(`Unknown view: ${name}`);
+			}
 
-app.use((req, res, next) => {
-	res.render = (name, data = {}) => {
-		const render = views[name];
+			return res.type("html").send(render({
+				...res.locals,
+				...data
+			}));
+		};
 
-		if (!render) {
-			throw new Error(`Unknown view: ${name}`);
-		}
-
-		return res.type("html").send(render({
-			...res.locals,
-			...data
-		}));
-	};
-
-	next();
-});
-
-app.use("/", indexRouter);
-
-app.use((err, req, res, next) => {
-	console.error(err);
-	res.status(500).send("Something went wrong. Please try again.");
+		next();
+	});
 });
 
 app.listen(3000);
