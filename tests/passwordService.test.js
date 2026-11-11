@@ -18,6 +18,10 @@ test("rejects null characters which PostgreSQL text cannot store", async () => {
 	await assert.rejects(hashPassword("test\0password"), TypeError);
 });
 
+test("rejects malformed Unicode rather than changing the password", async () => {
+	await assert.rejects(hashPassword("testpassword\uD800"), TypeError);
+});
+
 test("rejects passwords over 72 UTF-8 bytes without truncating them", async () => {
 	const password = "é".repeat(37);
 

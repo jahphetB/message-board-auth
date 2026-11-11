@@ -12,6 +12,10 @@ function validatePasswordInput(password) {
 	if (password.includes("\0")) {
 		throw new TypeError("Password cannot contain a null character.");
 	}
+
+	if (!password.isWellFormed()) {
+		throw new TypeError("Password must contain valid Unicode text.");
+	}
 }
 
 async function hashPassword(password) {
