@@ -18,7 +18,7 @@ const compiledViews = templates.map((name) => {
 		compileDebug: false,
 		strict: true,
 		_with: false,
-		destructuredLocals: ["title", "messages", "message", "signedUp", "csrfToken", "errors", "values", "user", "loginFailed", "action", "error"]
+		destructuredLocals: ["title", "messages", "message", "signedUp", "csrfToken", "errors", "values", "user", "loginFailed", "action", "error", "canSeeDetails"]
 	});
 
 	return `${JSON.stringify(name)}: ${render.toString()}`;

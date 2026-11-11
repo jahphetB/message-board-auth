@@ -3,7 +3,8 @@ const { getCsrfToken } = require("../middleware/csrf");
 const { validationResult } = require("express-validator");
 
 async function getMessages(req, res) {
-	const allMessages = await messages.getAllMessages();
+	const canSeeDetails = Boolean(req.user && (req.user.is_member || req.user.is_admin));
+	const allMessages = await messages.getAllMessages(canSeeDetails);
 	if (req.user) res.set("Cache-Control", "no-store");
 
 	res.render("index", {
@@ -11,27 +12,33 @@ async function getMessages(req, res) {
 		messages: allMessages,
 		signedUp: req.query.signedUp === "1",
 		user: req.user || null,
+		canSeeDetails,
 		csrfToken: req.user ? getCsrfToken(req) : null
 	});
 }
 
-async function getMessage(req, res) {
-	const { messageId } = req.params;
+function parseMessageId(messageId) {
 	const id = Number(messageId);
+	return /^[1-9]\d*$/.test(messageId) && Number.isSafeInteger(id) && id <= 2147483647 ? id : null;
+}
 
-	if (!/^[1-9]\d*$/.test(messageId) || !Number.isSafeInteger(id) || id > 2147483647) {
-		return res.status(404).send("Message not found");
-	}
-
-	const message = await messages.getMessageById(id);
+async function getMessage(req, res) {
+	const id = parseMessageId(req.params.messageId);
+	if (id === null) return res.status(404).send("Message not found");
+	const canSeeDetails = Boolean(req.user && (req.user.is_member || req.user.is_admin));
+	const message = await messages.getMessageById(id, canSeeDetails);
 
 	if (!message) {
 		return res.status(404).send("Message not found");
 	}
 
+	if (req.user) res.set("Cache-Control", "no-store");
 	res.render("message", {
 		title: "Message Details",
-		message
+		message,
+		canSeeDetails,
+		user: req.user || null,
+		csrfToken: req.user?.is_admin ? getCsrfToken(req) : null
 	});
 }
 
@@ -59,4 +66,12 @@ async function createMessage(req, res) {
 	return res.redirect("/");
 }
 
-module.exports = { getMessages, getMessage, getNewMessage, createMessage };
+async function deleteMessage(req, res) {
+	const id = parseMessageId(req.params.messageId);
+	if (id === null || !(await messages.deleteMessage(id))) {
+		return res.status(404).send("Message not found");
+	}
+	return res.redirect("/");
+}
+
+module.exports = { getMessages, getMessage, getNewMessage, createMessage, deleteMessage };

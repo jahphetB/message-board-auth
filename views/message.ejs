@@ -11,6 +11,16 @@
 			<h1 class="page-title"><%= title %></h1>
 			<h2 class="message-title"><%= message.title %></h2>
 			<p class="message-text"><%= message.text %></p>
+			<% if (canSeeDetails) { %>
+				<p class="message-user"><%= message.first_name %> <%= message.last_name %></p>
+				<time class="message-date" datetime="<%= message.created_at.toISOString() %>"><%= message.created_at.toISOString() %></time>
+			<% } %>
+			<% if (user && user.is_admin) { %>
+				<form class="message-delete-form" method="POST" action="/messages/<%= message.id %>/delete">
+					<input class="csrf-token" type="hidden" name="_csrf" value="<%= csrfToken %>">
+					<button class="message-delete-button" type="submit">Delete</button>
+				</form>
+			<% } %>
 			<a class="home-link" href="/">Back to messages</a>
 		</main>
 	</body>
