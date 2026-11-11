@@ -16,6 +16,7 @@
   "dependencies": {
     "ejs": "3.1.10",
     "express": "^5.3.0",
+    "express-validator": "^7.3.2",
     "pg": "^8.23.1"
   },
   "devDependencies": {
