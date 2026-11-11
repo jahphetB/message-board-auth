@@ -17,4 +17,11 @@ async function getMessageById(id) {
 	return rows[0];
 }
 
-module.exports = { getAllMessages, getMessageById };
+async function createMessage(userId, title, text) {
+	await database.query(
+		"INSERT INTO messages (user_id, title, text) VALUES ($1, $2, $3)",
+		[userId, title, text]
+	);
+}
+
+module.exports = { getAllMessages, getMessageById, createMessage };

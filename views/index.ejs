@@ -15,6 +15,7 @@
 			<nav class="account-navigation" aria-label="Account">
 				<% if (user) { %>
 					<p class="account-name">Signed in as <%= user.username %></p>
+					<a class="new-message-link" href="/new">New message</a>
 					<% if (!user.is_member) { %>
 						<a class="join-club-link home-link" href="/join-club">Join the club</a>
 					<% } %>

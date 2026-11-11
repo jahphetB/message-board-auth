@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="/styles.css">
+		<title><%= title %></title>
+	</head>
+	<body class="page">
+		<main class="main">
+			<h1 class="page-title"><%= title %></h1>
+			<% if (errors.length) { %>
+				<ul class="form-errors" role="alert">
+					<% errors.forEach((error) => { %>
+						<li class="form-error"><%= error %></li>
+					<% }); %>
+				</ul>
+			<% } %>
+			<form class="message-form new-message-form" method="POST" action="/new">
+				<input class="csrf-token" type="hidden" name="_csrf" value="<%= csrfToken %>">
+				<label class="form-label" for="message-title">Title</label>
+				<input class="form-input" id="message-title" name="title" value="<%= values.title %>" required>
+				<label class="form-label" for="message-text">Message</label>
+				<textarea class="form-textarea" id="message-text" name="text" required><%= values.text %></textarea>
+				<button class="form-submit" type="submit">Post message</button>
+			</form>
+			<a class="home-link" href="/">Back to messages</a>
+		</main>
+	</body>
+</html>

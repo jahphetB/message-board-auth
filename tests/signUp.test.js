@@ -72,7 +72,7 @@ test("sign-up validates input, enforces CSRF, and stores a bcrypt hash", async (
 		assert.equal(await database.withPool(client, () => passwords.comparePassword(fields.password, rows[0].password_hash)), true);
 
 		const removedRoute = await fetch(`${base}/new`, { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded", cookie }, body: new URLSearchParams({ _csrf: token }) });
-		assert.equal(removedRoute.status, 404);
+		assert.equal(removedRoute.status, 401);
 
 		const duplicate = await post({ ...fields, username: username.toLowerCase(), _csrf: token });
 		assert.equal(duplicate.status, 409);

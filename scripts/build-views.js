@@ -5,7 +5,7 @@ const ejs = require("ejs");
 const viewsDirectory = path.join(__dirname, "../views");
 const outputDirectory = path.join(__dirname, "../generated");
 
-const templates = ["index", "message", "sign-up", "log-in", "passcode"];
+const templates = ["index", "message", "sign-up", "log-in", "passcode", "new-message"];
 
 const compiledViews = templates.map((name) => {
 	const source = fs.readFileSync(
@@ -31,4 +31,4 @@ fs.writeFileSync(
 	`module.exports = {\n${compiledViews.join(",\n")}\n};\n`
 );
 
-console.log("Compiled index, message, sign-up, log-in, and passcode views.");
+console.log("Compiled application views.");
