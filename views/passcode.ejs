@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="/styles.css">
+		<title><%= title %></title>
+	</head>
+	<body class="page">
+		<main class="main">
+			<h1 class="page-title"><%= title %></h1>
+			<% if (error) { %>
+				<p class="form-error" role="alert"><%= error %></p>
+			<% } %>
+			<form class="message-form passcode-form" method="POST" action="<%= action %>">
+				<input class="csrf-token" type="hidden" name="_csrf" value="<%= csrfToken %>">
+				<label class="form-label" for="passcode">Passcode</label>
+				<input class="form-input" id="passcode" name="passcode" type="password" autocomplete="off" required>
+				<button class="form-submit" type="submit">Submit</button>
+			</form>
+			<a class="home-link" href="/">Back to messages</a>
+		</main>
+	</body>
+</html>

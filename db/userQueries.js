@@ -33,4 +33,14 @@ async function findUserById(id) {
 	return rows[0] ?? null;
 }
 
-module.exports = { createUser, findUserForLogin, findUserById };
+async function grantMembership(id) {
+	const { rowCount } = await database.query("UPDATE users SET is_member = true WHERE id = $1", [id]);
+	return rowCount > 0;
+}
+
+async function grantAdmin(id) {
+	const { rowCount } = await database.query("UPDATE users SET is_admin = true WHERE id = $1", [id]);
+	return rowCount > 0;
+}
+
+module.exports = { createUser, findUserForLogin, findUserById, grantMembership, grantAdmin };

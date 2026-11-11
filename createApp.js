@@ -3,6 +3,7 @@ const indexRouter = require("./routes/indexRouter");
 const { createSessionMiddleware } = require("./config/session");
 const passport = require("./config/passport");
 const authRouter = require("./routes/authRouter");
+const membershipRouter = require("./routes/membershipRouter");
 const { requireCsrf } = require("./middleware/csrf");
 
 function createApp(configureRuntime) {
@@ -15,6 +16,7 @@ function createApp(configureRuntime) {
 	app.use(passport.session());
 	app.use(requireCsrf);
 	app.use("/", authRouter);
+	app.use("/", membershipRouter);
 	app.use("/", indexRouter);
 
 	app.use((err, req, res, next) => {

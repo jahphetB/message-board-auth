@@ -15,6 +15,12 @@
 			<nav class="account-navigation" aria-label="Account">
 				<% if (user) { %>
 					<p class="account-name">Signed in as <%= user.username %></p>
+					<% if (!user.is_member) { %>
+						<a class="join-club-link home-link" href="/join-club">Join the club</a>
+					<% } %>
+					<% if (!user.is_admin) { %>
+						<a class="become-admin-link home-link" href="/become-admin">Become an admin</a>
+					<% } %>
 					<form class="logout-form" method="POST" action="/log-out">
 						<input class="csrf-token" type="hidden" name="_csrf" value="<%= csrfToken %>">
 						<button class="form-submit logout-button" type="submit">Log out</button>
