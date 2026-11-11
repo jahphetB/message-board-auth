@@ -1,11 +1,13 @@
 const express = require("express");
 const indexRouter = require("./routes/indexRouter");
+const { createSessionMiddleware } = require("./config/session");
 
 function createApp(configureRuntime) {
 	const app = express();
 
 	configureRuntime(app);
 	app.use(express.urlencoded({ extended: true }));
+	app.use(createSessionMiddleware(process.env.SESSION_SECRET));
 	app.use("/", indexRouter);
 
 	app.use((err, req, res, next) => {

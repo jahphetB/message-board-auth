@@ -7,6 +7,7 @@ import poolErrors from "./db/workerPoolErrors.js";
 import views from "./generated/views.js";
 
 const app = createApp((app) => {
+	app.set("trust proxy", 1);
 	app.use((req, res, next) => {
 		res.render = (name, data = {}) => {
 			const render = views[name];
