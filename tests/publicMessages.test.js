@@ -54,14 +54,15 @@ test("visitors can read escaped messages without author details or write access"
 
 		for (const [method, path] of [
 			["GET", "/new"],
-			["POST", "/new"],
 			["GET", `/messages/${id}/edit`],
-			["POST", `/messages/${id}/edit`],
-			["POST", `/messages/${id}/delete`],
 			["GET", "/messages/invalid"]
 		]) {
 			const response = await fetch(base + path, { method });
 			assert.equal(response.status, 404, `${method} ${path}`);
+		}
+		for (const path of ["/new", `/messages/${id}/edit`, `/messages/${id}/delete`]) {
+			const response = await fetch(base + path, { method: "POST" });
+			assert.equal(response.status, 403);
 		}
 	} finally {
 		if (server) {

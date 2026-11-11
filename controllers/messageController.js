@@ -5,7 +5,8 @@ async function getMessages(req, res) {
 
 	res.render("index", {
 		title: "Members Only",
-		messages: allMessages
+		messages: allMessages,
+		signedUp: req.query.signedUp === "1"
 	});
 }
 

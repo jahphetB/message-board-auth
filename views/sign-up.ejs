@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="/styles.css">
+		<title><%= title %></title>
+	</head>
+	<body class="page">
+		<main class="main">
+			<h1 class="page-title"><%= title %></h1>
+			<% if (errors.length) { %>
+				<ul class="form-errors" role="alert">
+					<% errors.forEach((error) => { %>
+						<li class="form-error"><%= error %></li>
+					<% }); %>
+				</ul>
+			<% } %>
+			<form class="message-form signup-form" method="POST" action="/sign-up">
+				<input class="csrf-token" type="hidden" name="_csrf" value="<%= csrfToken %>">
+				<label class="form-label" for="first-name">First name</label>
+				<input class="form-input" id="first-name" name="firstName" value="<%= values.firstName %>" autocomplete="given-name" required>
+				<label class="form-label" for="last-name">Last name</label>
+				<input class="form-input" id="last-name" name="lastName" value="<%= values.lastName %>" autocomplete="family-name" required>
+				<label class="form-label" for="username">Username</label>
+				<input class="form-input" id="username" name="username" value="<%= values.username %>" autocomplete="username" required>
+				<label class="form-label" for="password">Password (at least 12 characters, at most 72 UTF-8 bytes)</label>
+				<input class="form-input" id="password" name="password" type="password" autocomplete="new-password" required>
+				<label class="form-label" for="confirm-password">Confirm password</label>
+				<input class="form-input" id="confirm-password" name="confirmPassword" type="password" autocomplete="new-password" required>
+				<button class="form-submit" type="submit">Create account</button>
+			</form>
+			<a class="home-link" href="/">Back to messages</a>
+		</main>
+	</body>
+</html>

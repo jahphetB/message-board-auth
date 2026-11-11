@@ -9,6 +9,10 @@
 	<body class="page">
 		<main class="main">
 			<h1 class="page-title"><%= title %></h1>
+			<% if (signedUp) { %>
+				<p class="signup-success">Your account has been created.</p>
+			<% } %>
+			<a class="signup-link home-link" href="/sign-up">Sign up</a>
 			<ul class="message-list">
 				<% messages.forEach((message) => { %>
 					<li class="message-item">
