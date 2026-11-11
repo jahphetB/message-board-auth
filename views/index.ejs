@@ -12,7 +12,18 @@
 			<% if (signedUp) { %>
 				<p class="signup-success">Your account has been created.</p>
 			<% } %>
-			<a class="signup-link home-link" href="/sign-up">Sign up</a>
+			<nav class="account-navigation" aria-label="Account">
+				<% if (user) { %>
+					<p class="account-name">Signed in as <%= user.username %></p>
+					<form class="logout-form" method="POST" action="/log-out">
+						<input class="csrf-token" type="hidden" name="_csrf" value="<%= csrfToken %>">
+						<button class="form-submit logout-button" type="submit">Log out</button>
+					</form>
+				<% } else { %>
+					<a class="signup-link home-link" href="/sign-up">Sign up</a>
+					<a class="login-link home-link" href="/log-in">Log in</a>
+				<% } %>
+			</nav>
 			<ul class="message-list">
 				<% messages.forEach((message) => { %>
 					<li class="message-item">

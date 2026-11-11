@@ -1,12 +1,16 @@
 const messages = require("../db/messageQueries");
+const { getCsrfToken } = require("../middleware/csrf");
 
 async function getMessages(req, res) {
 	const allMessages = await messages.getAllMessages();
+	if (req.user) res.set("Cache-Control", "no-store");
 
 	res.render("index", {
 		title: "Members Only",
 		messages: allMessages,
-		signedUp: req.query.signedUp === "1"
+		signedUp: req.query.signedUp === "1",
+		user: req.user || null,
+		csrfToken: req.user ? getCsrfToken(req) : null
 	});
 }
 

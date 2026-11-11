@@ -5,7 +5,7 @@ const ejs = require("ejs");
 const viewsDirectory = path.join(__dirname, "../views");
 const outputDirectory = path.join(__dirname, "../generated");
 
-const templates = ["index", "message", "sign-up"];
+const templates = ["index", "message", "sign-up", "log-in"];
 
 const compiledViews = templates.map((name) => {
 	const source = fs.readFileSync(
@@ -18,7 +18,7 @@ const compiledViews = templates.map((name) => {
 		compileDebug: false,
 		strict: true,
 		_with: false,
-		destructuredLocals: ["title", "messages", "message", "signedUp", "csrfToken", "errors", "values"]
+		destructuredLocals: ["title", "messages", "message", "signedUp", "csrfToken", "errors", "values", "user", "loginFailed"]
 	});
 
 	return `${JSON.stringify(name)}: ${render.toString()}`;
@@ -31,4 +31,4 @@ fs.writeFileSync(
 	`module.exports = {\n${compiledViews.join(",\n")}\n};\n`
 );
 
-console.log("Compiled index, message, and sign-up views.");
+console.log("Compiled index, message, sign-up, and log-in views.");

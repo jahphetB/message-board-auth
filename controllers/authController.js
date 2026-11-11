@@ -21,6 +21,26 @@ function getSignUp(req, res) {
 	return renderSignUp(req, res);
 }
 
+function getLogIn(req, res) {
+	res.set("Cache-Control", "no-store");
+	return res.render("log-in", {
+		title: "Log in",
+		csrfToken: getCsrfToken(req),
+		loginFailed: req.query.failed === "1"
+	});
+}
+
+function logOut(req, res, next) {
+	req.logout((error) => {
+		if (error) return next(error);
+		req.session.destroy((destroyError) => {
+			if (destroyError) return next(destroyError);
+			res.clearCookie("connect.sid", { path: "/" });
+			return res.redirect("/");
+		});
+	});
+}
+
 async function signUp(req, res) {
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
@@ -40,4 +60,4 @@ async function signUp(req, res) {
 	}
 }
 
-module.exports = { getSignUp, signUp };
+module.exports = { getSignUp, signUp, getLogIn, logOut };
