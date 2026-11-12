@@ -1,61 +1,41 @@
-# Mini Message Board
+# Members Only
 
-A message board built with Express and EJS, with persistent messages stored in Neon PostgreSQL.
+[Live application](https://message-board-auth.jahphet.workers.dev/)
 
-[Live Demo](https://message-board.jahphet.workers.dev/)
+An authentication-enabled message board built with Express, EJS, PostgreSQL,
+Passport Local, and Cloudflare Workers. This project uses a separate Neon
+database and Worker from the original message board.
 
-## Features
+Visitors can read messages. Members and admins can also see authors and
+timestamps; admins can delete messages. Signed-in users can post messages.
+Club membership and admin access use separate passcodes.
 
-- View messages with author names and dates.
-- Submit new messages with server-side validation.
-- Open individual message details.
-- Keep messages across server restarts and deployments.
+## Local setup
 
-## Built With
+Install the dependencies with `npm install`. In `.env` and `.dev.vars`, set
+the following values for this application's separate database and secrets:
 
-Node.js, Express, EJS, PostgreSQL, node-postgres, plain CSS, Cloudflare Workers, and Neon.
+- `DATABASE_URL`: the Neon PostgreSQL connection string.
+- `SESSION_SECRET`: a random session-signing secret with at least 32 bytes of entropy.
+- `CLUB_PASSCODE`: the club passcode.
+- `ADMIN_PASSCODE`: a distinct admin passcode.
 
-## Run Locally
+Keep these files private and do not commit them. Use the same values in both
+files for local Node and Workers development.
 
-```bash
-npm install
-```
+For a **new, empty database schema only**, run `node --env-file=.env scripts/setup-db.js`.
+The script creates the user, message, and session tables
+and enables pgcrypto. It refuses to initialize a schema where an application
+table already exists. The old `db/populatedb.js` is for the original schema and
+must not be used for this application.
 
-Create `.env` in the project root:
-
-```dotenv
-DATABASE_URL=your_postgresql_connection_string
-```
-
-Create the database table and sample messages:
-
-```bash
-node --env-file=.env db/populatedb.js
-```
-
-Start the development server:
-
-```bash
-npm run dev
-```
-
-### Run in the Workers runtime
-
-Copy `.env` to `.dev.vars`, then run:
-
-```bash
-npm run dev:worker
-```
+Start Node with `npm run dev` or the local Workers runtime with
+`npm run dev:worker`. Run the automated tests with `node --env-file=.env --test`.
 
 ## Deployment
 
-Set the database secret and deploy:
-
-```bash
-npx wrangler login
-npx wrangler secret put DATABASE_URL
-npx wrangler deploy
-```
-
-Wrangler automatically compiles the EJS templates before deployment.
-.
+Configure the four values above as secrets on the `message-board-auth` Worker,
+then deploy with Wrangler. The Worker build compiles the EJS views automatically.
+The Cloudflare Workers Free plan has a 10 ms CPU limit per request; measured
+database-backed operations have sometimes exceeded it, so live reliability
+under that plan still needs monitoring.
