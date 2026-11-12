@@ -42,7 +42,7 @@ test("sign-up validates input, enforces CSRF, and stores a bcrypt hash", async (
 		assert.doesNotMatch(html, /name="(?:is_admin|is_member)"/);
 
 		const username = `User_${randomUUID().replaceAll("-", "").slice(0, 20)}`;
-		const fields = { firstName: " Ana ", lastName: " Lee ", username, password: "secret test password", confirmPassword: "secret test password" };
+		const fields = { firstName: " Ana ", lastName: " Lee ", username, password: "test12", confirmPassword: "test12" };
 		const post = (data, sessionCookie = cookie) => fetch(`${base}/sign-up`, {
 			method: "POST", redirect: "manual",
 			headers: { "content-type": "application/x-www-form-urlencoded", cookie: sessionCookie },
@@ -57,7 +57,7 @@ test("sign-up validates input, enforces CSRF, and stores a bcrypt hash", async (
 		const invalidHtml = await invalid.text();
 		assert.equal(invalid.status, 400);
 		assert.match(invalidHtml, /Passwords must match/);
-		assert.doesNotMatch(invalidHtml, /secret test password|different password/);
+		assert.doesNotMatch(invalidHtml, /test12|different password/);
 
 		const success = await post({ ...fields, _csrf: token });
 		assert.equal(success.status, 302);

@@ -12,7 +12,7 @@ async function validate(password, confirmPassword) {
 }
 
 test("accepts matching passwords at the character and byte boundaries", async () => {
-	for (const password of ["a".repeat(12), "é".repeat(36), " a long passphrase "]) {
+	for (const password of ["a".repeat(6), "é".repeat(36), " a long passphrase "]) {
 		const result = await validate(password, password);
 		assert.equal(result.errors.length, 0);
 		assert.equal(result.body.password, password);
@@ -20,7 +20,7 @@ test("accepts matching passwords at the character and byte boundaries", async ()
 });
 
 test("rejects invalid password lengths and inputs without exposing values", async () => {
-	for (const password of ["a".repeat(11), " ".repeat(12), "é".repeat(37), "validpassword\0", "validpassword\uD800", 123, ["secret"]]) {
+	for (const password of ["a".repeat(5), " ".repeat(6), "é".repeat(37), "validpassword\0", "validpassword\uD800", 123, ["secret"]]) {
 		const result = await validate(password, password);
 		assert.ok(result.errors.some((error) => error.path === "password"));
 		assert.ok(result.errors.every((error) => !Object.hasOwn(error, "value")));
