@@ -60,6 +60,8 @@ test("visitors can read escaped messages without author details or write access"
 			assert.equal(response.status, 404, `${method} ${path}`);
 		}
 		assert.equal((await fetch(`${base}/new`, { redirect: "manual" })).status, 302);
+		const forgedNotice = await fetch(`${base}/?joined=1&adminGranted=1`);
+		assert.doesNotMatch(await forgedNotice.text(), /You joined the club|Admin access is enabled/);
 		for (const path of ["/new", `/messages/${id}/edit`, `/messages/${id}/delete`]) {
 			const response = await fetch(base + path, { method: "POST" });
 			assert.equal(response.status, 403);

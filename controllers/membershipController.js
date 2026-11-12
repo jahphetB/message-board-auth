@@ -28,7 +28,7 @@ async function joinClub(req, res) {
 		return renderForm(req, res, "Join the club", "/join-club", "Incorrect passcode.", 400);
 	}
 	if (!(await users.grantMembership(req.user.id))) return res.status(404).send("Account not found.");
-	return res.redirect("/");
+	return res.redirect("/?joined=1");
 }
 
 async function becomeAdmin(req, res) {
@@ -37,7 +37,7 @@ async function becomeAdmin(req, res) {
 		return renderForm(req, res, "Become an admin", "/become-admin", "Incorrect passcode.", 400);
 	}
 	if (!(await users.grantAdmin(req.user.id))) return res.status(404).send("Account not found.");
-	return res.redirect("/");
+	return res.redirect("/?adminGranted=1");
 }
 
 module.exports = { getClub, getAdmin, joinClub, becomeAdmin };

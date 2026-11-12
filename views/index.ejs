@@ -10,11 +10,19 @@
 		<main class="main">
 			<h1 class="page-title"><%= title %></h1>
 			<% if (signedUp) { %>
-				<p class="signup-success">Your account has been created.</p>
+				<p class="signup-success">Your account has been created. Log in to post a message.</p>
+			<% } %>
+			<% if (joined) { %>
+				<p class="membership-success" role="status">You joined the club.</p>
+			<% } %>
+			<% if (adminGranted) { %>
+				<p class="admin-success" role="status">Admin access is enabled.</p>
 			<% } %>
 			<nav class="account-navigation" aria-label="Account">
 				<% if (user) { %>
 					<p class="account-name">Signed in as <%= user.username %></p>
+					<p class="membership-status">Club status: <%= user.is_member ? "Member" : "Not a member" %></p>
+					<p class="admin-status">Admin status: <%= user.is_admin ? "Admin" : "Not an admin" %></p>
 					<a class="new-message-link" href="/new">New message</a>
 					<% if (!user.is_member) { %>
 						<a class="join-club-link home-link" href="/join-club">Join the club</a>
@@ -31,6 +39,9 @@
 					<a class="login-link home-link" href="/log-in">Log in</a>
 				<% } %>
 			</nav>
+			<% if (messages.length === 0) { %>
+				<p class="empty-messages">No messages yet.</p>
+			<% } %>
 			<ul class="message-list">
 				<% messages.forEach((message) => { %>
 					<li class="message-item">

@@ -11,6 +11,8 @@ async function getMessages(req, res) {
 		title: "Members Only",
 		messages: allMessages,
 		signedUp: req.query.signedUp === "1",
+		joined: req.query.joined === "1" && Boolean(req.user?.is_member),
+		adminGranted: req.query.adminGranted === "1" && Boolean(req.user?.is_admin),
 		user: req.user || null,
 		canSeeDetails,
 		csrfToken: req.user ? getCsrfToken(req) : null

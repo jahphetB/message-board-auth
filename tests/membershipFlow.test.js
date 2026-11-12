@@ -32,8 +32,14 @@ test("club and admin passcodes update only the authenticated user", async () => 
 		const login = await post("/log-in", loginCookie, { username: account.username, password, _csrf: loginToken });
 		assert.equal(login.status, 302);
 		const cookie = login.headers.get("set-cookie").split(";")[0];
+		const initialPage = await fetch(`${base}/`, { headers: { cookie } });
+		const initialHtml = await initialPage.text();
+		assert.match(initialHtml, /Club status: Not a member/);
+		assert.match(initialHtml, /Admin status: Not an admin/);
 		const form = await fetch(`${base}/join-club`, { headers: { cookie } });
-		const token = (await form.text()).match(/name="_csrf" value="([a-f0-9]{64})"/)[1];
+		const formHtml = await form.text();
+		assert.match(formHtml, /Enter the passcode provided for this role/);
+		const token = formHtml.match(/name="_csrf" value="([a-f0-9]{64})"/)[1];
 
 		assert.equal((await post("/join-club", cookie, { passcode: process.env.CLUB_PASSCODE })).status, 403);
 		assert.equal((await post("/join-club", cookie, { _csrf: token, passcode: "incorrect" })).status, 400);
@@ -42,11 +48,21 @@ test("club and admin passcodes update only the authenticated user", async () => 
 		assert.equal(found.is_member, false);
 		assert.equal(found.is_admin, false);
 
-		assert.equal((await post("/join-club", cookie, { _csrf: token, passcode: process.env.CLUB_PASSCODE, userId: other.id })).status, 302);
+		const join = await post("/join-club", cookie, { _csrf: token, passcode: process.env.CLUB_PASSCODE, userId: other.id });
+		assert.equal(join.status, 302);
+		const joinedPage = await fetch(base + join.headers.get("location"), { headers: { cookie } });
+		const joinedHtml = await joinedPage.text();
+		assert.match(joinedHtml, /You joined the club/);
+		assert.match(joinedHtml, /Club status: Member/);
 		found = await database.withPool(client, () => users.findUserById(account.id));
 		assert.equal(found.is_member, true);
 		assert.equal(found.is_admin, false);
-		assert.equal((await post("/become-admin", cookie, { _csrf: token, passcode: process.env.ADMIN_PASSCODE, userId: other.id })).status, 302);
+		const promote = await post("/become-admin", cookie, { _csrf: token, passcode: process.env.ADMIN_PASSCODE, userId: other.id });
+		assert.equal(promote.status, 302);
+		const adminPage = await fetch(base + promote.headers.get("location"), { headers: { cookie } });
+		const adminHtml = await adminPage.text();
+		assert.match(adminHtml, /Admin access is enabled/);
+		assert.match(adminHtml, /Admin status: Admin/);
 		found = await database.withPool(client, () => users.findUserById(account.id));
 		assert.equal(found.is_admin, true);
 		const untouched = await database.withPool(client, () => users.findUserById(other.id));
