@@ -5,6 +5,7 @@ const passport = require("./config/passport");
 const authRouter = require("./routes/authRouter");
 const membershipRouter = require("./routes/membershipRouter");
 const { requireCsrf } = require("./middleware/csrf");
+const { createSessionCleanup } = require("./middleware/sessionCleanup");
 
 function createApp(configureRuntime) {
 	const app = express();
@@ -14,6 +15,7 @@ function createApp(configureRuntime) {
 	app.use(createSessionMiddleware(process.env.SESSION_SECRET));
 	app.use(passport.initialize());
 	app.use(passport.session());
+	app.use(createSessionCleanup());
 	app.use(requireCsrf);
 	app.use("/", authRouter);
 	app.use("/", membershipRouter);
